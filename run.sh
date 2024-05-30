@@ -23,7 +23,7 @@ esac
 # Check if the Ubuntu base system is already installed
 if [ ! -d "$(pwd)/bin" ]; then
     echo "=================================================="
-    echo "      @Linuztux Ubuntu Server 20.04 Installer     "
+    echo "      @Linuztuxx Ubuntu Server 20.04 Installer    "
     echo "=================================================="
     echo "                 @Copyright 2024                  "
     echo "=================================================="
@@ -87,7 +87,7 @@ echo "=================================================="
 echo "              Starting Ubuntu Server...           "
 echo "=================================================="
 echo 'To login as root, type "su"'
-echo -e 'To exit the proot environment, type "exit" and then type "exit" again to fully exit.\n'
+echo -e 'To quit the proot environment, enter "exit" twice to fully exit.\n'
 
 # Start the Ubuntu environment using proot
 "$(pwd)/usr/local/bin/proot" --rootfs="$(pwd)" \
