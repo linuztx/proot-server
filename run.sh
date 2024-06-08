@@ -87,7 +87,7 @@ echo "=================================================="
 echo "              Starting Ubuntu Server...           "
 echo "=================================================="
 echo 'To login as root, type "su"'
-echo -e 'To quit the proot environment, enter "exit" twice to fully exit.\n'
+echo -e "To quit the proot environment, enter \"exit\" twice to fully exit.\n"
 
 # Start the Ubuntu environment using proot
 "$(pwd)/usr/local/bin/proot" --rootfs="$(pwd)" \
