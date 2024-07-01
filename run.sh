@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-### CREATE BY @Linuztuxx ###
+### CREATE BY @Linuztx ###
 ### UBUNTU 20.04 ###
 ### 2024 ###
 # This script downloads and installs the Ubuntu Server 20.04 base system
