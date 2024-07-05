@@ -23,7 +23,7 @@ esac
 # Check if the Ubuntu base system is already installed
 if [ ! -d "$(pwd)/bin" ]; then
     echo "=================================================="
-    echo "      @Linuztuxx Ubuntu Server 20.04 Installer    "
+    echo "      @Linuztx Ubuntu Server 20.04 Installer    "
     echo "=================================================="
     echo "                 @Copyright 2024                  "
     echo "=================================================="
@@ -34,7 +34,7 @@ if [ ! -d "$(pwd)/bin" ]; then
             [yY][eE][sS])
                 echo -e "Starting installation...\n"
                 curl -L --retry $MAX_RETRIES --retry-delay $TIMEOUT --output /tmp/rootfs.tar.gz \
-                    "http://cdimage.ubuntu.com/ubuntu-base/releases/20.04/release/ubuntu-base-20.04.4-base-${ARCH_ALT}.tar.gz"
+                    "https://cdimage.ubuntu.com/ubuntu-base/releases/22.04/release/ubuntu-base-22.04-base-${ARCH_ALT}.tar.gz"
                 if [ $? -eq 0 ]; then
                     tar -xf /tmp/rootfs.tar.gz -C "$(pwd)"
                     rm -f /tmp/rootfs.tar.gz
@@ -80,7 +80,7 @@ fi
 
 # Display the startup message
 echo "=================================================="
-echo "      @Linuztuxx Ubuntu Server 20.04 Installer    "
+echo "      @Linuztx Ubuntu Server 20.04 Installer    "
 echo "=================================================="
 echo "                 @Copyright 2024                  "
 echo "=================================================="
