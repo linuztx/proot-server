@@ -1,6 +1,6 @@
 # Proot Server
 
-This repository contains a script for installing and running Ubuntu Server 20.04 on servers that do not have root access. The script uses PRoot, a user-space implementation of chroot, mount --bind, and binfmt_misc, allowing you to perform actions that normally require root access. This makes it possible to install a full-fledged Ubuntu Server 20.04 environment on servers where you don't have root privileges.
+This repository contains a script for installing and running Ubuntu Server 22.04 on servers that do not have root access. The script uses PRoot, a user-space implementation of chroot, mount --bind, and binfmt_misc, allowing you to perform actions that normally require root access. This makes it possible to install a full-fledged Ubuntu Server 22.04 environment on servers where you don't have root privileges.
 
 ## Prerequisites
 
