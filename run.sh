@@ -1,9 +1,9 @@
 #!/usr/bin/env sh
 
 ### CREATE BY @Linuztx ###
-### UBUNTU 20.04 ###
+### UBUNTU 22.04 ###
 ### 2024 ###
-# This script downloads and installs the Ubuntu Server 20.04 base system
+# This script downloads and installs the Ubuntu Server 22.04 base system
 # and sets up a proot environment to run it.
 
 # Constants
@@ -23,13 +23,13 @@ esac
 # Check if the Ubuntu base system is already installed
 if [ ! -d "$(pwd)/bin" ]; then
     echo "=================================================="
-    echo "      @Linuztx Ubuntu Server 20.04 Installer    "
+    echo "      @Linuztx Ubuntu Server 22.04 Installer      "
     echo "=================================================="
     echo "                 @Copyright 2024                  "
     echo "=================================================="
     # Prompt the user for installation confirmation
     while true; do
-        read -p 'Do you want to install Ubuntu Server 20.04? (Yes/no): ' prompt
+        read -p 'Do you want to install Ubuntu Server 22.04? (Yes/no): ' prompt
         case $prompt in
             [yY][eE][sS])
                 echo -e "Starting installation...\n"
@@ -38,9 +38,9 @@ if [ ! -d "$(pwd)/bin" ]; then
                 if [ $? -eq 0 ]; then
                     tar -xf /tmp/rootfs.tar.gz -C "$(pwd)"
                     rm -f /tmp/rootfs.tar.gz
-                    echo -e "\nUbuntu Server 20.04 base system installed successfully.\n"
+                    echo -e "\nUbuntu Server 22.04 base system installed successfully.\n"
                 else
-                    echo -e "\nFailed to download the Ubuntu Server 20.04 base system.\n"
+                    echo -e "\nFailed to download the Ubuntu Server 22.04 base system.\n"
                     exit 1
                 fi
                 break
@@ -80,7 +80,7 @@ fi
 
 # Display the startup message
 echo "=================================================="
-echo "      @Linuztx Ubuntu Server 20.04 Installer    "
+echo "      @Linuztx Ubuntu Server 22.04 Installer      "
 echo "=================================================="
 echo "                 @Copyright 2024                  "
 echo "=================================================="

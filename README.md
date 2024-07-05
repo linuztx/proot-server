@@ -25,7 +25,7 @@ While PRoot provides a user-space implementation of chroot, it does not provide 
 To use this script, you need to clone the repository, navigate to the directory, make the script executable, and then run it. Here are the commands you need to run:
 
 ```shellscript
-git clone https://github.com/linuztuxx/proot-server.git
+git clone https://github.com/linuztx/proot-server.git
 cd proot-server
 chmod +x run.sh
 ./run.sh
