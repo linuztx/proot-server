@@ -202,6 +202,6 @@ echo "=================================================="
 echo 'To login as root, type "su"'
 echo -e "To quit the proot environment, enter \"exit\" twice to fully exit.\n"
 
-# Start the Ubuntu environment using proot
+# Start the linux server environment using proot
 "$(pwd)/$distro_dir/usr/local/bin/proot" --rootfs="$(pwd)/$distro_dir" \
     -0 -w "/root" -b /dev -b /sys -b /proc -b /etc/resolv.conf --kill-on-exit
