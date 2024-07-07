@@ -1,10 +1,10 @@
 #!/usr/bin/env sh
 
-### CREATED BY @Linuztx ###
-### SERVER INSTALLER PRO ###
-### 2024 ###
-# This script downloads and installs a Linux base system (Ubuntu, Alpine, or Debian) 
-# and sets up a proot environment to run the chosen system
+# Linux Server Installer Pro
+# Created by @Linuztx
+# Copyright (C) 2024 Linuztx
+# This script installs a Linux base system (Ubuntu, Alpine, or Debian)
+# and sets up a proot environment to run the chosen system.
 
 # Constants for the script
 TIMEOUT=1
@@ -21,10 +21,11 @@ case "$(uname -m)" in
         ;;
 esac
 
+# Display the welcome message and options
 echo "=================================================="
-echo "|      @Linuztx Linux Server Installer Pro       |"
+echo "|      Linux Server Installer Pro by @Linuztx    |"
 echo "=================================================="
-echo "|                @Copyright 2024                 |"
+echo "|                Copyright (C) 2024              |"
 echo "=================================================="
 echo "|        1.) Ubuntu (24.04, Noble Numbat)        |"
 echo "|        2.) Alpine (3.19, Linux)                |"
@@ -160,7 +161,7 @@ while true; do
             echo -e "No distro installed. Please install a distro first."
             exit 1
         fi
-        break  # Exit the loop
+        break 
     ;;            
     *)
         echo -e "\nInvalid choice. Please choose 1, 2, or 3.\n"
@@ -193,11 +194,11 @@ fi
 
 # Display the startup message
 echo "=================================================="
-echo "|       @Linuztx Linux Server Installer Pro      |"
+echo "|      Linux Server Installer Pro by Linuztx     |"
 echo "=================================================="
-echo "|                @Copyright 2024                 |"
+echo "|               Copyright (C) 2024               |"
 echo "=================================================="
-echo "|            Starting Linux Server...            |"
+echo "|           Starting The Linux Server...         |"
 echo "=================================================="
 echo 'To login as root, type "su"'
 echo -e "To quit the proot environment, enter \"exit\" twice to fully exit.\n"
