@@ -177,7 +177,8 @@ while true; do
                 3)
                     distro_dir="debian"
                     ;;
-                4)  distro_dir="fedora"
+                4)  
+                    distro_dir="fedora"
                     ;;
                 *)
                     echo -e "\nInvalid choice. Please choose 1, 2, or 3.\n"
