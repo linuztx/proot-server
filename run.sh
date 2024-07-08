@@ -3,7 +3,7 @@
 # Linux Server Installer Pro
 # Created by @Linuztx
 # Copyright (C) 2024 Linuztx
-# This script installs a Linux base system (Ubuntu, Alpine, or Debian)
+# This script installs a Linux base system (Ubuntu, Alpine, Debian or Fedora)
 # and sets up a proot environment to run the chosen system.
 
 # Constants for the script
@@ -30,9 +30,10 @@ echo "=================================================="
 echo "|        1.) Ubuntu (24.04, Noble Numbat)        |"
 echo "|        2.) Alpine (3.19, Linux)                |"
 echo "|        3.) Debian (12, Bookworm)               |"
-echo "|        4.) Use the already installed distro    |"
+echo "|        4.) Fedora (40, Linux)                  |"
+echo "|        5.) Use the already installed distro    |"
 echo "=================================================="
-read -p "Choose a distro (1/2/3/4): " distro
+read -p "Choose a distro (1/2/3/4/5): " distro
 while true; do
     case $distro in
     1) 
@@ -126,13 +127,44 @@ while true; do
         done
     ;;
     4)
-        if [ -d "$(pwd)/ubuntu" ] || [ -d "$(pwd)/alpine" ] || [ -d "$(pwd)/debian" ]; then
+        distro_dir="fedora"
+        while true; do
+            read -p 'Do you want to install Fedora 40, Linux? (Yes/no): ' prompt
+            case $prompt in
+                [yY][eE][sS])
+                    echo -e "Starting installation...\n"
+                    curl -L --retry $MAX_RETRIES --retry-delay $TIMEOUT --output /tmp/rootfs.tar.xz \
+                        "https://github.com/termux/proot-distro/releases/download/v4.15.0/fedora-${ARCH_DEFAULT}-pd-v4.15.0.tar.xz"
+                    if [ $? -eq 0 ]; then
+                        mkdir $(pwd)/$distro_dir
+                        tar -xf /tmp/rootfs.tar.xz -C "$(pwd)/$distro_dir" --strip-components=1
+                        rm -f /tmp/rootfs.tar.gz
+                        echo -e "\nFedora 40, Linux base system installed successfully.\n"
+                    else
+                        echo -e "\nFailed to download the Fedora 40, Linux base system.\n"
+                        exit 1
+                    fi
+                    break 2
+                    ;;
+                [nN][oO])
+                    echo -e "Skipping Installation...\n"
+                    break 2
+                    ;;
+                *)
+                    echo "Please answer Yes or no."
+                    ;;
+            esac
+        done
+    ;;
+    5)
+        if [ -d "$(pwd)/ubuntu" ] || [ -d "$(pwd)/alpine" ] || [ -d "$(pwd)/debian" ] || [ -d "$(pwd)/fedora" ]; then
             echo -e "\n=================================================="
             echo "|       Available Installed Linux Distros        |"
             echo "=================================================="
             [ -d "$(pwd)/ubuntu" ] && echo "|        1.) Ubuntu (24.04, Noble Numbat)        |"
             [ -d "$(pwd)/alpine" ] && echo "|        2.) Alpine (3.19, Linux)                |"
             [ -d "$(pwd)/debian" ] && echo "|        3.) Debian (12, Bookworm)               |"
+            [ -d "$(pwd)/fedora" ] && echo "|        4.) Fedora (40, Linux)                  |"
             echo "=================================================="
             read -p "Choose a distro to use (1/2/3): " installed_distro
             case $installed_distro in
@@ -144,6 +176,8 @@ while true; do
                     ;;
                 3)
                     distro_dir="debian"
+                    ;;
+                4)  distro_dir="fedora"
                     ;;
                 *)
                     echo -e "\nInvalid choice. Please choose 1, 2, or 3.\n"
@@ -194,7 +228,7 @@ fi
 
 # Display the startup message
 echo "=================================================="
-echo "|      Linux Server Installer Pro by Linuztx     |"
+echo "|      Linux Server Installer Pro by @Linuztx    |"
 echo "=================================================="
 echo "|               Copyright (C) 2024               |"
 echo "=================================================="
