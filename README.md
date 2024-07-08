@@ -4,12 +4,12 @@
 
 ## Overview
 
-Proot Server is a script designed to install and run a Linux base system (Ubuntu, Alpine, or Debian) on servers or environments where root access is not available. Utilizing proot, a user-space implementation of chroot, this script enables you to set up a full Linux environment without root privileges.
+Proot Server is a script designed to install and run a Linux base system (Ubuntu, Alpine, Debian or Fedora) on servers or environments where root access is not available. Utilizing proot, a user-space implementation of chroot, this script enables you to set up a full Linux environment without root privileges.
 
 ## Features
 
 - **Rootless Linux Environment**: Run a Linux environment without needing root access.
-- **Distro Choice**: Choose from Ubuntu, Alpine, or Debian distributions.
+- **Distro Choice**: Choose from Ubuntu, Alpine, Debian or Fedora distributions.
 - **proot Integration**: Leverages proot for creating a chroot-like environment.
 - **Easy Installation**: A single script handles the installation and setup process.
 - **Re-Entrant Environment**: Re-enter the environment by simply running the script again.
