@@ -29,7 +29,7 @@ echo "|                Copyright (C) 2024              |"
 echo "=================================================="
 echo "|        1.) Ubuntu (20.04 Focal Fossa)          |"
 echo "|        2.) Alpine (3.19, Linux)                |"
-echo "|        3.) Debian (12, Bookworm)               |"
+echo "|        3.) Debian (11, Bullseye)               |"
 echo "|        4.) Fedora (40, Linux)                  |"
 echo "|        5.) Use the already installed distro    |"
 echo "=================================================="
@@ -105,7 +105,7 @@ while true; do
                     [yY][eE][sS])
                         echo -e "Starting installation...\n"
                         curl -L --retry $MAX_RETRIES --retry-delay $TIMEOUT --output /tmp/rootfs.tar.xz \
-                            "https://github.com/termux/proot-distro/releases/download/v4.7.0/debian-bookworm-${ARCH_DEFAULT}-pd-v4.7.0.tar.xz"
+                            "https://github.com/termux/proot-distro/releases/download/v4.7.0/debian-bullseye-${ARCH_DEFAULT}-pd-v4.7.0.tar.xz"
                         if [ $? -eq 0 ]; then
                             mkdir -p "$(pwd)/$distro_dir"
                             tar -xf /tmp/rootfs.tar.xz -C "$(pwd)/$distro_dir" --strip-components=1
