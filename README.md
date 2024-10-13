@@ -1,65 +1,87 @@
-# Proot Server: Linux Environment on Non-Root Servers
+# Proot Server: Linux Server Installer Pro
 
 [![GitHub](https://img.shields.io/github/license/linuztx/proot-server)](https://github.com/linuztx/proot-server/blob/main/LICENSE)
 
+![proot-server](https://github.com/user-attachments/assets/976c7478-8d4b-4d4b-b35e-ad49c77ae5fe)
+
 ## Overview
 
-Proot Server is a script designed to install and run a Linux base system (Ubuntu, Alpine, Debian or Fedora) on servers or environments where root access is not available. Utilizing proot, a user-space implementation of chroot, this script enables you to set up a full Linux environment without root privileges.
+Proot Server is a powerful shell script that enables you to install and run various Linux distributions (Ubuntu, Alpine, Debian, or Fedora) in a proot environment. This tool is particularly useful for setting up Linux environments on systems where you don't have root access or in situations where you need isolated Linux instances.
 
 ## Features
 
-- **Rootless Linux Environment**: Run a Linux environment without needing root access.
-- **Distro Choice**: Choose from Ubuntu, Alpine, Debian or Fedora distributions.
-- **proot Integration**: Leverages proot for creating a chroot-like environment.
-- **Easy Installation**: A single script handles the installation and setup process.
-- **Re-Entrant Environment**: Re-enter the environment by simply running the script again.
+- **Multiple Distribution Support**: Choose from Ubuntu 20.04 Focal Fossa, Alpine 3.19, Debian 12 Bookworm, or Fedora 40.
+- **Architecture Compatibility**: Supports x86_64 (amd64) and aarch64 (arm64) architectures.
+- **Proot Integration**: Utilizes proot for creating a chroot-like environment without requiring root privileges.
+- **Persistent Installation**: Installed distributions can be reused in subsequent runs.
+- **Automatic Dependency Handling**: Downloads and sets up proot if not already installed.
+- **DNS Configuration**: Automatically sets up DNS resolution using Cloudflare's DNS servers.
 
 ## Prerequisites
 
-Before running the script, ensure you have the following tools installed:
-
-- `curl`: For fetching necessary files from the internet.
-- `tar`: For extracting the downloaded files.
-- `proot`: For creating a chroot-like environment.
-
-## Supported Architectures
-
-The script is tested and works on `x86_64` and `aarch64` architectures. Compatibility with other architectures is not guaranteed.
+- `curl`: For downloading distribution files and proot.
+- `tar`: For extracting downloaded files.
+- Internet connection for downloading necessary files.
 
 ## Usage
 
-To use the script, follow these steps:
-
 1. **Clone the Repository**:
-
-   ```shell
+   ```
    git clone https://github.com/linuztx/proot-server.git
    cd proot-server
    ```
 
-2. **Make the Script Executable**:
-
-   ```shell
-   chmod +x run.sh
+2. **Run the Script**:
    ```
-
-3. **Run the Script**:
-
-   ```shell
    ./run.sh
    ```
 
-   The script will guide you through the installation process, allowing you to choose your preferred Linux distribution.
+3. **Choose a Distribution**:
+   - Select from options 1-4 to install a new distribution.
+   - Choose option 5 to use an already installed distribution.
 
-4. **Access the Environment**:
-   After installation, the script will start a shell session inside the chosen Linux environment.
+4. **Installation Process**:
+   - The script will download the selected distribution's rootfs.
+   - It will extract the files and set up the environment.
 
-5. **Exit the Environment**:
-   To exit the environment, type `exit` twice in the shell session.
+5. **Proot Setup**:
+   - If not present, the script will download and configure proot.
+
+6. **Entering the Environment**:
+   - After setup, you'll be automatically entered into the proot environment.
+   - Use `su` to switch to root user within the environment.
+
+7. **Exiting the Environment**:
+   - Type `exit` twice to fully exit the proot environment.
+
+## Supported Distributions and Versions
+
+- Ubuntu 20.04 Focal Fossa
+- Alpine 3.19
+- Debian 12 Bookworm
+- Fedora 40
+
+## Directory Structure
+
+The script creates directories for each installed distribution:
+- `./ubuntu` for Ubuntu
+- `./alpine` for Alpine
+- `./debian` for Debian
+- `./fedora` for Fedora
+
+## Network Configuration
+
+The script automatically sets up `/etc/resolv.conf` with Cloudflare's DNS servers (1.1.1.1 and 1.0.0.1).
 
 ## Limitations
 
-While proot provides a chroot-like environment, it does not offer full isolation or root-level capabilities. Some actions that require root access may not function as expected.
+- While proot provides a chroot-like environment, it does not offer full system isolation.
+- Some operations requiring true root access may not function as expected.
+
+## Troubleshooting
+
+- If downloads fail, the script will retry up to 10 times with a 1-second delay between attempts.
+- Ensure you have a stable internet connection for successful downloads.
 
 ## License
 
