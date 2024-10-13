@@ -3,241 +3,116 @@
 # Linux Server Installer Pro
 # Created by @Linuztx
 # Copyright (C) 2024 Linuztx
-# This script installs a Linux base system (Ubuntu, Alpine, Debian or Fedora)
-# and sets up a proot environment to run the chosen system.
 
-# Constants for the script
+# Color definitions
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Constants
 TIMEOUT=1
 MAX_RETRIES=10
 ARCH_DEFAULT=$(uname -m)
+ARCH_ALT=$([ "$ARCH_DEFAULT" = "x86_64" ] && echo "amd64" || echo "arm64")
 
-# Determine the alternative architecture name based on the current architecture
-case "$(uname -m)" in
-    x86_64) ARCH_ALT=amd64 ;;
-    aarch64) ARCH_ALT=arm64 ;;
-    *)
-        echo "Unsupported architecture: $(uname -m)"
+# Function to print colored messages
+print_message() {
+    color=$1
+    message=$2
+    printf "${color}%s${NC}\n" "$message"
+}
+
+# Function to display the menu
+display_menu() {
+    print_message $BLUE "=================================================="
+    print_message $BLUE "|      Linux Server Installer Pro by @Linuztx    |"
+    print_message $BLUE "=================================================="
+    print_message $BLUE "|                Copyright (C) 2024              |"
+    print_message $BLUE "=================================================="
+    print_message $YELLOW "|        1.) Ubuntu (20.04 Focal Fossa)          |"
+    print_message $YELLOW "|        2.) Alpine (3.19, Linux)                |"
+    print_message $YELLOW "|        3.) Debian (12, Bookworm)               |"
+    print_message $YELLOW "|        4.) Fedora (40, Linux)                  |"
+    print_message $YELLOW "|        5.) Use the already installed distro    |"
+    print_message $BLUE "=================================================="
+}
+
+# Function to install a distribution
+install_distro() {
+    distro_name=$1
+    distro_dir=$2
+    rootfs_url=$3
+
+    print_message $GREEN "Starting installation of $distro_name..."
+    curl -L --retry $MAX_RETRIES --retry-delay $TIMEOUT --output /tmp/rootfs.tar.gz "$rootfs_url"
+    if [ $? -eq 0 ]; then
+        mkdir -p "$(pwd)/$distro_dir"
+        tar -xf /tmp/rootfs.tar.gz -C "$(pwd)/$distro_dir" ${4:+--strip-components=1}
+        rm -f /tmp/rootfs.tar.gz
+        print_message $GREEN "$distro_name base system installed successfully."
+    else
+        print_message $RED "Failed to download the $distro_name base system."
         exit 1
-        ;;
-esac
+    fi
+}
 
-# Display the welcome message and options
-echo "=================================================="
-echo "|      Linux Server Installer Pro by @Linuztx    |"
-echo "=================================================="
-echo "|                Copyright (C) 2024              |"
-echo "=================================================="
-echo "|        1.) Ubuntu (20.04 Focal Fossa)          |"
-echo "|        2.) Alpine (3.19, Linux)                |"
-echo "|        3.) Debian (11, Bullseye)               |"
-echo "|        4.) Fedora (40, Linux)                  |"
-echo "|        5.) Use the already installed distro    |"
-echo "=================================================="
+# Main script
+display_menu
 read -p "Choose a distro (1/2/3/4/5): " distro
 
-while true; do
-    case $distro in
-        1) 
-            distro_dir="ubuntu"
-            while true; do
-                read -p 'Do you want to install Ubuntu Server 20.04 Focal Fossa, Linux? (Yes/no): ' prompt
-                case $prompt in
-                    [yY][eE][sS])
-                        echo -e "Starting installation...\n"
-                        curl -L --retry $MAX_RETRIES --retry-delay $TIMEOUT --output /tmp/rootfs.tar.gz \
-                            "http://cdimage.ubuntu.com/ubuntu-base/releases/20.04/release/ubuntu-base-20.04.4-base-${ARCH_ALT}.tar.gz"
-                        if [ $? -eq 0 ]; then
-                            mkdir -p "$(pwd)/$distro_dir"
-                            tar -xf /tmp/rootfs.tar.gz -C "$(pwd)/$distro_dir"
-                            rm -f /tmp/rootfs.tar.gz
-                            echo -e "\nUbuntu Server 20.04 Focal Fossa Linux base system installed successfully.\n"
-                        else
-                            echo -e "\nFailed to download the Ubuntu Server 20.04 Focal Fossa, Linux base system.\n"
-                            exit 1
-                        fi
-                        break 2
-                        ;;
-                    [nN][oO])
-                        echo -e "Skipping Installation...\n"
-                        break 2
-                        ;;
-                    *)
-                        echo "Please answer Yes or no."
-                        ;;
-                esac
-            done
+case $distro in
+    1) install_distro "Ubuntu Server 20.04 Focal Fossa" "ubuntu" "http://cdimage.ubuntu.com/ubuntu-base/releases/20.04/release/ubuntu-base-20.04.4-base-${ARCH_ALT}.tar.gz" ;;
+    2) install_distro "Alpine Server 3.19" "alpine" "https://dl-cdn.alpinelinux.org/alpine/v3.19/releases/${ARCH_DEFAULT}/alpine-minirootfs-3.19.1-${ARCH_DEFAULT}.tar.gz" ;;
+    3) install_distro "Debian Server 12 Bookworm" "debian" "https://github.com/termux/proot-distro/releases/download/v4.7.0/debian-bullseye-${ARCH_DEFAULT}-pd-v4.7.0.tar.xz" 1 ;;
+    4) install_distro "Fedora 40" "fedora" "https://github.com/termux/proot-distro/releases/download/v4.15.0/fedora-${ARCH_DEFAULT}-pd-v4.15.0.tar.xz" 1 ;;
+    5)
+        if [ -d "$(pwd)/ubuntu" ] || [ -d "$(pwd)/alpine" ] || [ -d "$(pwd)/debian" ] || [ -d "$(pwd)/fedora" ]; then
+            print_message $BLUE "Available Installed Linux Distros:"
+            [ -d "$(pwd)/ubuntu" ] && print_message $YELLOW "1.) Ubuntu (20.04 Focal Fossa)"
+            [ -d "$(pwd)/alpine" ] && print_message $YELLOW "2.) Alpine (3.19, Linux)"
+            [ -d "$(pwd)/debian" ] && print_message $YELLOW "3.) Debian (12, Bookworm)"
+            [ -d "$(pwd)/fedora" ] && print_message $YELLOW "4.) Fedora (40, Linux)"
+            read -p "Choose a distro to use (1/2/3/4): " installed_distro
+            case $installed_distro in
+                1) distro_dir="ubuntu" ;;
+                2) distro_dir="alpine" ;;
+                3) distro_dir="debian" ;;
+                4) distro_dir="fedora" ;;
+                *) print_message $RED "Invalid choice. Exiting."; exit 1 ;;
+            esac
+            [ ! -d "$(pwd)/$distro_dir" ] && print_message $RED "The directory for the chosen distro does not exist. Please install the distro first." && exit 1
+            print_message $GREEN "Using the already installed $distro_dir base system."
+        else
+            print_message $RED "No distro installed. Please install a distro first."
+            exit 1
+        fi
         ;;
-        2)
-            distro_dir="alpine"
-            while true; do
-                read -p 'Do you want to install Alpine Server 3.19, Linux? (Yes/no): ' prompt
-                case $prompt in
-                    [yY][eE][sS])
-                        echo -e "Starting installation...\n"
-                        curl -L --retry $MAX_RETRIES --retry-delay $TIMEOUT --output /tmp/rootfs.tar.gz \
-                            "https://dl-cdn.alpinelinux.org/alpine/v3.19/releases/x86_64/alpine-minirootfs-3.19.1-${ARCH_DEFAULT}.tar.gz"
-                        if [ $? -eq 0 ]; then
-                            mkdir -p "$(pwd)/$distro_dir"
-                            tar -xf /tmp/rootfs.tar.gz -C "$(pwd)/$distro_dir"
-                            rm -f /tmp/rootfs.tar.gz
-                            echo -e "\nAlpine Server 3.19 Linux base system installed successfully.\n"
-                        else
-                            echo -e "\nFailed to download the Alpine Server 3.19, Linux base system.\n"
-                            exit 1
-                        fi
-                        break 2
-                        ;;
-                    [nN][oO])
-                        echo -e "Skipping Installation...\n"
-                        break 2
-                        ;;
-                    *)
-                        echo "Please answer Yes or no."
-                        ;;
-                esac
-            done
-        ;;
-        3)        
-            distro_dir="debian"
-            while true; do
-                read -p 'Do you want to install Debian Server 12, bookworm? (Yes/no): ' prompt
-                case $prompt in
-                    [yY][eE][sS])
-                        echo -e "Starting installation...\n"
-                        curl -L --retry $MAX_RETRIES --retry-delay $TIMEOUT --output /tmp/rootfs.tar.xz \
-                            "https://github.com/termux/proot-distro/releases/download/v4.7.0/debian-bullseye-${ARCH_DEFAULT}-pd-v4.7.0.tar.xz"
-                        if [ $? -eq 0 ]; then
-                            mkdir -p "$(pwd)/$distro_dir"
-                            tar -xf /tmp/rootfs.tar.xz -C "$(pwd)/$distro_dir" --strip-components=1
-                            rm -f /tmp/rootfs.tar.xz 
-                            echo -e "\nDebian Server 12, bookworm base system installed successfully.\n"
-                        else
-                            echo -e "\nFailed to download the Debian Server 12, bookworm base system.\n"
-                            exit 1
-                        fi
-                        break 2
-                        ;;
-                    [nN][oO])
-                        echo -e "Skipping Installation...\n"
-                        break 2
-                        ;;
-                    *)
-                        echo "Please answer Yes or no."
-                        ;;
-                esac
-            done
-        ;;
-        4)
-            distro_dir="fedora"
-            while true; do
-                read -p 'Do you want to install Fedora 40, Linux? (Yes/no): ' prompt
-                case $prompt in
-                    [yY][eE][sS])
-                        echo -e "Starting installation...\n"
-                        curl -L --retry $MAX_RETRIES --retry-delay $TIMEOUT --output /tmp/rootfs.tar.xz \
-                            "https://github.com/termux/proot-distro/releases/download/v4.15.0/fedora-${ARCH_DEFAULT}-pd-v4.15.0.tar.xz"
-                        if [ $? -eq 0 ]; then
-                            mkdir -p "$(pwd)/$distro_dir"
-                            tar -xf /tmp/rootfs.tar.xz -C "$(pwd)/$distro_dir" --strip-components=1
-                            rm -f /tmp/rootfs.tar.xz
-                            echo -e "\nFedora 40, Linux base system installed successfully.\n"
-                        else
-                            echo -e "\nFailed to download the Fedora 40, Linux base system.\n"
-                            exit 1
-                        fi
-                        break 2
-                        ;;
-                    [nN][oO])
-                        echo -e "Skipping Installation...\n"
-                        break 2
-                        ;;
-                    *)
-                        echo "Please answer Yes or no."
-                        ;;
-                esac
-            done
-        ;;
-        5)
-            if [ -d "$(pwd)/ubuntu" ] || [ -d "$(pwd)/alpine" ] || [ -d "$(pwd)/debian" ] || [ -d "$(pwd)/fedora" ]; then
-                echo -e "\n=================================================="
-                echo "|       Available Installed Linux Distros        |"
-                echo "=================================================="
-                [ -d "$(pwd)/ubuntu" ] && echo "|        1.) Ubuntu (20.04 Focal Fossa)          |"
-                [ -d "$(pwd)/alpine" ] && echo "|        2.) Alpine (3.19, Linux)                |"
-                [ -d "$(pwd)/debian" ] && echo "|        3.) Debian (12, Bookworm)               |"
-                [ -d "$(pwd)/fedora" ] && echo "|        4.) Fedora (40, Linux)                  |"
-                echo "=================================================="
-                read -p "Choose a distro to use (1/2/3/4): " installed_distro
-                case $installed_distro in
-                    1)
-                        distro_dir="ubuntu"
-                        ;;
-                    2)
-                        distro_dir="alpine"
-                        ;;
-                    3)
-                        distro_dir="debian"
-                        ;;
-                    4)  
-                        distro_dir="fedora"
-                        ;;
-                    *)
-                        echo -e "\nInvalid choice. Please choose 1, 2, 3, or 4.\n"
-                        continue
-                        ;;
-                esac
-                
-                # Check if the chosen directory exists
-                if [ ! -d "$(pwd)/$distro_dir" ]; then
-                    echo -e "\nThe directory for the chosen distro does not exist. Please install the distro first.\n"
-                    exit 1
-                fi
-                echo -e "Using the already installed $distro_dir base system.\n"
-                break
-            else
-                echo -e "No distro installed. Please install a distro first."
-                exit 1
-            fi
-        ;;
-        *)
-            echo -e "\nInvalid choice. Please choose 1, 2, 3, 4, or 5.\n"
-            read -p "Choose a distro (1/2/3/4/5): " distro
-            ;;
-    esac
-done 
+    *) print_message $RED "Invalid choice. Exiting."; exit 1 ;;
+esac
 
-# Download and set up proot if not already installed
+# Download and set up proot
 if [ ! -x "$(pwd)/$distro_dir/usr/local/bin/proot" ]; then
     mkdir -p "$(pwd)/$distro_dir/usr/local/bin"
-    while [ ! -s "$(pwd)/$distro_dir/usr/local/bin/proot" ]; do
-        rm -f "$(pwd)/$distro_dir/usr/local/bin/proot"
-        curl -L --retry $MAX_RETRIES --retry-delay $TIMEOUT --output "$(pwd)/$distro_dir/usr/local/bin/proot" "https://proot.gitlab.io/proot/bin/proot"
-        if [ -s "$(pwd)/$distro_dir/usr/local/bin/proot" ]; then
-            chmod 755 "$(pwd)/$distro_dir/usr/local/bin/proot"
-            echo -e "\nproot has been downloaded and permissions have been set successfully.\n"
-        else
-            echo -e "\nFailed to download proot, retrying in 5 seconds...\n"
-            sleep 5
-        fi
-    done
+    curl -L --retry $MAX_RETRIES --retry-delay $TIMEOUT --output "$(pwd)/$distro_dir/usr/local/bin/proot" "https://proot.gitlab.io/proot/bin/proot"
+    chmod 755 "$(pwd)/$distro_dir/usr/local/bin/proot"
+    print_message $GREEN "proot has been downloaded and permissions have been set."
 fi
 
-# Finalize the installation if not already done
-if [ ! -f "$(pwd)/$distro_dir/etc/resolv.conf" ]; then
-    mkdir -p "$(pwd)/$distro_dir/etc"
-    printf "nameserver 1.1.1.1\nnameserver 1.0.0.1\n" > "$(pwd)/$distro_dir/etc/resolv.conf"
-fi
+# Set up DNS
+[ ! -f "$(pwd)/$distro_dir/etc/resolv.conf" ] && printf "nameserver 1.1.1.1\nnameserver 1.0.0.1\n" > "$(pwd)/$distro_dir/etc/resolv.conf"
 
-# Display the startup message
-echo "=================================================="
-echo "|      Linux Server Installer Pro by @Linuztx    |"
-echo "=================================================="
-echo "|               Copyright (C) 2024               |"
-echo "=================================================="
-echo "|           Starting The Linux Server...         |"
-echo "=================================================="
-echo 'To login as root, type "su"'
-echo -e "To quit the proot environment, enter \"exit\" twice to fully exit.\n"
+# Display startup message
+print_message $BLUE "=================================================="
+print_message $BLUE "|      Linux Server Installer Pro by @Linuztx    |"
+print_message $BLUE "=================================================="
+print_message $BLUE "|               Copyright (C) 2024               |"
+print_message $BLUE "=================================================="
+print_message $GREEN "|           Starting The Linux Server...         |"
+print_message $BLUE "=================================================="
+print_message $YELLOW "To login as root, type 'su'"
+print_message $YELLOW "To quit the proot environment, enter 'exit' twice."
 
 # Start the linux server environment using proot
 "$(pwd)/$distro_dir/usr/local/bin/proot" --rootfs="$(pwd)/$distro_dir" \
